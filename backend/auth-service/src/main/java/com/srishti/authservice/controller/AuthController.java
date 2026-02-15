@@ -50,15 +50,16 @@ public class AuthController {
     }
 
     @PostMapping("/token")
-    public String getToken(@RequestBody AuthRequest authRequest) {
+    public ResponseEntity<Object> getToken(@RequestBody AuthRequest authRequest) {
         Authentication authenticate = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword())
         );
         if(authenticate.isAuthenticated()) {
-            return authService.generateToken(authRequest.getUsername());
+            com.srishti.authservice.dto.LoginResponse response = authService.generateToken(authRequest.getUsername());
+            return ResponseEntity.ok(response);
         }
         else {
-            return "Invalid access";
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid access");
         }
     }
 
