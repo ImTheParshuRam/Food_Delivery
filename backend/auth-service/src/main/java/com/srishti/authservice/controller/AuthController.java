@@ -45,13 +45,15 @@ public class AuthController {
         } catch (IllegalArgumentException e) {
             System.err.println("=== VALIDATION ERROR ===");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"message\": \"" + e.getMessage() + "\"}");
-        } catch (Exception e) {
-            System.err.println("=== ERROR IN REGISTRATION ===");
+        } catch (Throwable e) {
+            System.err.println("=== CRITICAL ERROR IN REGISTRATION ===");
             System.err.println("Error Type: " + e.getClass().getName());
             System.err.println("Error Message: " + e.getMessage());
             e.printStackTrace();
             System.err.println("===============================");
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"message\": \"Registration failed: " + e.getMessage() + "\"}");
+            // Return stack trace or detailed message for debugging
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("{\"message\": \"Critical failure: " + e.getMessage() + "\", \"type\": \"" + e.getClass().getName() + "\"}");
         }
     }
 
