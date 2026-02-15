@@ -28,8 +28,14 @@ const Login = () => {
         setError('');
 
         try {
-            await login(formData);
-            navigate('/');
+            const data = await login(formData); // login returns data object
+            if (data.user?.userRole === 'RESTAURANT_OWNER') {
+                navigate('/my-restaurant');
+            } else if (data.user?.userRole === 'DELIVERY_AGENT') {
+                navigate('/orders'); // Or delivery dashboard if exists
+            } else {
+                navigate('/');
+            }
         } catch (err) {
             setError(err.response?.data?.message || 'Invalid credentials. Please try again.');
         } finally {

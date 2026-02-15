@@ -8,6 +8,9 @@ import RestaurantDetail from './pages/RestaurantDetail';
 import Cart from './pages/Cart';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import Orders from './pages/Orders';
+import Profile from './pages/Profile';
+import MyRestaurant from './pages/MyRestaurant';
 import './index.css';
 
 function App() {
@@ -25,6 +28,9 @@ function App() {
                                 <Route path="/cart" element={<Cart />} />
                                 <Route path="/login" element={<Login />} />
                                 <Route path="/register" element={<Register />} />
+                                <Route path="/orders" element={<Orders />} />
+                                <Route path="/profile" element={<Profile />} />
+                                <Route path="/my-restaurant" element={<MyRestaurant />} />
                             </Routes>
                         </main>
                         <footer className="app-footer">
