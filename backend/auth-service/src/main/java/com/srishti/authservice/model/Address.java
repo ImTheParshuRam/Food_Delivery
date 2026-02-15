@@ -12,8 +12,8 @@ import lombok.*;
 @ToString
 @Embeddable
 public class Address {
-    private String address;
+    private String street;
     private String city;
     private String state;
-    private Integer zipcode;
+    private Integer zipCode;
 }

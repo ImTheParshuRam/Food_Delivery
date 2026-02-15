@@ -16,7 +16,7 @@ public class DeliveryController {
 
     @PostMapping("/{orderId}")
     @ResponseStatus(HttpStatus.CREATED)
-    public String deliverOrder(@PathVariable String orderId) {
+    public String deliverOrder(@PathVariable Long orderId) {
         return deliveryService.deliverOrder(orderId);
     }
 

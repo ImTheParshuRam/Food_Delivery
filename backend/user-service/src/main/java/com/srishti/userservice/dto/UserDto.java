@@ -10,7 +10,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserDto {
-    private String id;
+    private Long id;
     private String fullName;
     private String email;
     private Long phoneNumber;

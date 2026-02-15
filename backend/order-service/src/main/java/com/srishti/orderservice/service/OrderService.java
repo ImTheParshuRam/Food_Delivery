@@ -35,7 +35,7 @@ public class OrderService {
         orderRepository.save(order);
 
         // call FoodItemService to update quantity of items after order is placed
-        List<String> foodItemIds = order.getOrderItems().stream().map(OrderItem::getFoodItemId).toList();
+        List<Long> foodItemIds = order.getOrderItems().stream().map(OrderItem::getFoodItemId).toList();
         List<Integer> orderQuantities = order.getOrderItems().stream().map(OrderItem::getQuantity).toList();
 
         webClientBuilder.build().put()
@@ -61,11 +61,11 @@ public class OrderService {
     }
 
     public void updateOrderAfterPayment(List<String> paymentInfo) {
-        Optional<Order> optionalOrder = orderRepository.findById(paymentInfo.get(1));
+        Optional<Order> optionalOrder = orderRepository.findById(Long.parseLong(paymentInfo.get(1)));
         if(optionalOrder.isPresent()) {
             Order order = optionalOrder.get();
             if(paymentInfo.get(2).equals("SUCCESS")) {
-                order.setPaymentId(paymentInfo.get(0));
+                order.setPaymentId(Long.parseLong(paymentInfo.get(0)));
                 order.setOrderStatus(OrderStatus.COMPLETED);
                 order.setDeliveryTime(order.getOrderTime() + 30*60*1000);
                 orderRepository.save(order);
@@ -96,7 +96,7 @@ public class OrderService {
         kafkaTemplate.send("order-rest-notification-topic", notification);
     }
 
-    public void updateOrderStatus(String orderId, OrderStatus orderStatus) {
+    public void updateOrderStatus(Long orderId, OrderStatus orderStatus) {
         Optional<Order> optionalOrder = orderRepository.findById(orderId);
         if(optionalOrder.isPresent()) {
             Order order = optionalOrder.get();

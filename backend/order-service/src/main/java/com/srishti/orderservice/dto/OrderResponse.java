@@ -25,5 +25,5 @@ public class OrderResponse {
     private OrderStatus orderStatus;
     private Long expectedDeliveryTime;
     private Address address;
-    private String paymentId;
+    private Long paymentId;
 }

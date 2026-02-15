@@ -39,7 +39,7 @@ public class FoodItemService {
         return "Food item added with id: " + foodItem.getId();
     }
 
-    public List<FoodItemDto> getAllFoodItems(String restaurantId) {
+    public List<FoodItemDto> getAllFoodItems(Long restaurantId) {
         List<FoodItem> allFoodItems =  foodItemRepository.findByRestaurantId(restaurantId);
         return allFoodItems.stream().map(foodItem ->
                 FoodItemDto.builder()
@@ -76,13 +76,13 @@ public class FoodItemService {
         foodItemRepository.save(item);
     }
 
-    public void updateFoodItemQuantity(List<String> foodItemIds, List<Integer> orderQuantities) {
+    public void updateFoodItemQuantity(List<Long> foodItemIds, List<Integer> orderQuantities) {
         for(int i=0; i<foodItemIds.size(); i++) {
             updateFoodItemQuantity(foodItemIds.get(i), orderQuantities.get(i));
         }
     }
 
-    private void updateFoodItemQuantity(String foodItemId, Integer quantity) {
+    private void updateFoodItemQuantity(Long foodItemId, Integer quantity) {
         Optional<FoodItem> foodItem = foodItemRepository.findById(foodItemId);
         if(foodItem.isPresent()) {
             FoodItem foodItem1 = foodItem.get();

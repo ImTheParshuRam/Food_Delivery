@@ -11,7 +11,7 @@ import java.math.BigDecimal;
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Entity
-@Table(name = \"order_items\")
+@Table(name = "order_items" )
 @AllArgsConstructor
 @NoArgsConstructor
 public class OrderItem {

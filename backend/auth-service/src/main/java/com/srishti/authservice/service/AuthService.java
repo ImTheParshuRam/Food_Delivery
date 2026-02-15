@@ -1,5 +1,6 @@
 package com.srishti.authservice.service;
 
+import com.srishti.authservice.dto.RegisterRequest;
 import com.srishti.authservice.dto.UserDto;
 import com.srishti.authservice.dto.UserResponse;
 import com.srishti.authservice.model.DeliveryAgent;
@@ -29,10 +30,33 @@ public class AuthService {
     @Autowired
     private AuthenticationManager authenticationManager;
 
-    public String saveUser(UserCredential credential) {
-        credential.setPassword(passwordEncoder.encode(credential.getPassword()));
-        userRepository.save(credential);
-        return "User added to the system";
+    public String saveUser(RegisterRequest registerRequest) {
+        try {
+            // Map RegisterRequest to UserCredential
+            UserCredential credential = new UserCredential();
+            credential.setUsername(registerRequest.getUsername());
+            credential.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
+            credential.setFullName(registerRequest.getName());
+            
+            // Convert phone string to Long
+            try {
+                Long phoneNumber = Long.parseLong(registerRequest.getPhone().replaceAll("[^0-9]", ""));
+                credential.setPhoneNumber(phoneNumber);
+            } catch (NumberFormatException e) {
+                System.err.println("Phone conversion error: " + e.getMessage());
+                credential.setPhoneNumber(0L);
+            }
+            
+            credential.setAddress(registerRequest.getAddress());
+            credential.setUserRole(registerRequest.getRole() != null ? registerRequest.getRole() : UserRole.CUSTOMER);
+            
+            userRepository.save(credential);
+            return "User added to the system";
+        } catch (Exception e) {
+            System.err.println("Error saving user: " + e.getMessage());
+            e.printStackTrace();
+            throw new RuntimeException("Failed to save user: " + e.getMessage());
+        }
     }
 
     public String generateToken(String username) {
@@ -43,11 +67,18 @@ public class AuthService {
         jwtService.validateToken(token);
     }
 
-    public UserResponse getUser(String id) {
-        Optional<UserCredential> user = userRepository.findById(id);
-        if(user.isPresent()) {
-            UserCredential user1 = user.get();
-            return mapUserToUserResponse(user1);
+    public UserResponse getUser(Long id) {
+        try {
+            Optional<UserCredential> user = userRepository.findById(id);
+            if(user.isPresent()) {
+                UserCredential user1 = user.get();
+                return mapUserToUserResponse(user1);
+            }
+        } catch (NumberFormatException e) {
+            return UserResponse.builder()
+                    .responseCode(400)
+                    .msg("Invalid user ID format")
+                    .build();
         }
         return UserResponse.builder()
                 .responseCode(404)
@@ -84,7 +115,7 @@ public class AuthService {
     private UserResponse mapUserToUserResponse(UserCredential user1) {
         return UserResponse.builder()
                 .user(UserDto.builder()
-                        .id(user1.getId())
+                        .id(String.valueOf(user1.getId()))
                         .fullName(user1.getFullName())
                         .email(user1.getUsername())
                         .phoneNumber(user1.getPhoneNumber())
