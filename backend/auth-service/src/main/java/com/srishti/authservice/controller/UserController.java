@@ -19,7 +19,7 @@ public class UserController {
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public UserResponse getUser(@PathVariable("id") String id, @RequestHeader("loggedInUser") String username) {
+    public UserResponse getUser(@PathVariable("id") Long id, @RequestHeader("loggedInUser") String username) {
         // No authorization needed for Get User
         System.out.println("Get user with username: "+ username);
         return authService.getUser(id);

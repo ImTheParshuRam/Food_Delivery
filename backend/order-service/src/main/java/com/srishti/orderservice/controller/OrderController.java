@@ -23,7 +23,7 @@ public class OrderController {
 
     @PutMapping("/status")
     @ResponseStatus(HttpStatus.OK)
-    public void updateOrderStatus(@RequestParam String orderId,  @RequestBody OrderStatus orderStatus) {
+    public void updateOrderStatus(@RequestParam Long orderId,  @RequestBody OrderStatus orderStatus) {
         orderService.updateOrderStatus(orderId, orderStatus);
     }
 }

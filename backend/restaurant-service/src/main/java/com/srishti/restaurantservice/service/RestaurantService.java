@@ -60,7 +60,7 @@ public class RestaurantService {
         return "Restaurant with id: " + restaurant.getId() + "added successfully";
     }
 
-    public RestaurantResponse getRestaurant(String id) {
+    public RestaurantResponse getRestaurant(Long id) {
         Optional<Restaurant> restaurant = restaurantRepository.findById(id);
         RestaurantResponse restaurantResponse = new RestaurantResponse();
         if(restaurant.isPresent()) {

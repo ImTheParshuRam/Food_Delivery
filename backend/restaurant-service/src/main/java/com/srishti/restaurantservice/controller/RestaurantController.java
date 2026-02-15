@@ -31,7 +31,7 @@ public class RestaurantController {
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public RestaurantResponse getRestaurant(@PathVariable("id") String id) {
+    public RestaurantResponse getRestaurant(@PathVariable("id") Long id) {
         return restaurantService.getRestaurant(id);
     }
 }

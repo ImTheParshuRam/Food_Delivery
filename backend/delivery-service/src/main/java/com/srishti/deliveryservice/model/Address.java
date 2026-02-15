@@ -12,8 +12,8 @@ import lombok.NoArgsConstructor;
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Address {
-    private String address;
+    private String street;
     private String city;
     private String state;
-    private Integer zipcode;
+    private Integer zipCode;
 }

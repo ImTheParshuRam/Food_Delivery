@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.bson.types.Binary;
 
 import java.math.BigDecimal;
 
@@ -13,11 +12,11 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @Builder
 public class FoodItemDto {
-    private String id;
+    private Long id;
     private String name;
     private String description;
     private BigDecimal price;
-    private Binary icon;
+    private byte[] icon;
     private Integer quantity;
-    private String restaurantId;
+    private Long restaurantId;
 }

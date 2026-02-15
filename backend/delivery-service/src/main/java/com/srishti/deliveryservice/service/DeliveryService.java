@@ -16,7 +16,7 @@ import org.springframework.web.util.UriBuilder;
 public class DeliveryService {
     @Autowired
     private WebClient.Builder webClientBuilder;
-    public String deliverOrder(String orderId) {
+    public String deliverOrder(Long orderId) {
         // update order status to delivered
         webClientBuilder.build().put()
                 .uri("http://order-service/api/v1/order/status",

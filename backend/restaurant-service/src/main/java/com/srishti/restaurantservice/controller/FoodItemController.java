@@ -25,7 +25,7 @@ public class FoodItemController {
 
     @GetMapping("/{restaurantId}")
     @ResponseStatus(HttpStatus.OK)
-    public List<FoodItemDto> getAllFoodItems(@PathVariable("restaurantId") String restaurantId) {
+    public List<FoodItemDto> getAllFoodItems(@PathVariable("restaurantId") Long restaurantId) {
         return foodItemService.getAllFoodItems(restaurantId);
     }
 
@@ -38,7 +38,7 @@ public class FoodItemController {
 
     @PutMapping("/quantity")
     @ResponseStatus(HttpStatus.OK)
-    public void updateFoodItemQuantity(@RequestParam List<String> foodItemIds, @RequestParam List<Integer> orderQuantities) {
+    public void updateFoodItemQuantity(@RequestParam List<Long> foodItemIds, @RequestParam List<Integer> orderQuantities) {
         foodItemService.updateFoodItemQuantity(foodItemIds, orderQuantities);
     }
 

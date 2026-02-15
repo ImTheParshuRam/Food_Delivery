@@ -18,7 +18,7 @@ public class UserService {
         return "User with id: " + user.getId() + " created";
     }
 
-    public UserResponse getUser(String id) {
+    public UserResponse getUser(Long id) {
         Optional<User> user = userRepository.findById(id);
         if(user.isPresent()) {
             User user1 = user.get();

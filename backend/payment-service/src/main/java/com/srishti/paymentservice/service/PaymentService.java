@@ -33,8 +33,8 @@ public class PaymentService {
         // send payment info to order-service
         //TODO: getting error for custom data object
         List<String> paymentInfo = new ArrayList<>();
-        paymentInfo.add(payment.getId());
-        paymentInfo.add(payment.getOrderId());
+        paymentInfo.add(String.valueOf(payment.getId()));
+        paymentInfo.add(String.valueOf(payment.getOrderId()));
         paymentInfo.add("SUCCESS");
         kafkaTemplate.send("payment-notification-topic", paymentInfo);
 
