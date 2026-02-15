@@ -78,6 +78,11 @@ export const restaurantService = {
         return response.data;
     },
 
+    getRestaurantByOwner: async (username) => {
+        const response = await api.get(`/v1/restaurant/owner/${username}`);
+        return response.data;
+    },
+
     createRestaurant: async (restaurantData) => {
         const response = await api.post('/v1/restaurant', restaurantData);
         return response.data;
@@ -136,6 +141,11 @@ export const orderService = {
 
     getUserOrders: async (userId) => {
         const response = await api.get(`/v1/order/user/${userId}`);
+        return response.data;
+    },
+
+    getRestaurantOrders: async (restaurantId) => {
+        const response = await api.get(`/v1/order/restaurant/${restaurantId}`);
         return response.data;
     },
 

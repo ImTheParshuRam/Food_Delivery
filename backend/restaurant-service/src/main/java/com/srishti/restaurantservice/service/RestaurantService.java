@@ -62,7 +62,15 @@ public class RestaurantService {
 
     public RestaurantResponse getRestaurant(Long id) {
         Optional<Restaurant> restaurant = restaurantRepository.findById(id);
-        RestaurantResponse restaurantResponse = new RestaurantResponse();
+        return getRestaurantResponse(restaurant);
+    }
+
+    public RestaurantResponse getRestaurantByOwner(String username) {
+        Optional<Restaurant> restaurant = restaurantRepository.findByOwnerUsername(username);
+        return getRestaurantResponse(restaurant);
+    }
+
+    private RestaurantResponse getRestaurantResponse(Optional<Restaurant> restaurant) {
         if(restaurant.isPresent()) {
             return RestaurantResponse.builder()
                     .restaurantDto(getRestaurantDto(restaurant.get()))
@@ -72,7 +80,7 @@ public class RestaurantService {
         }
         return RestaurantResponse.builder()
                 .responseCode(404)
-                .msg("Restaurant not found with this id")
+                .msg("Restaurant not found")
                 .build();
     }
 

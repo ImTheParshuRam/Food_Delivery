@@ -26,4 +26,16 @@ public class OrderController {
     public void updateOrderStatus(@RequestParam Long orderId,  @RequestBody OrderStatus orderStatus) {
         orderService.updateOrderStatus(orderId, orderStatus);
     }
+
+    @GetMapping("/user/{userId}")
+    @ResponseStatus(HttpStatus.OK)
+    public java.util.List<Order> getUserOrders(@PathVariable Long userId) {
+        return orderService.getOrdersByUser(userId);
+    }
+
+    @GetMapping("/restaurant/{restaurantId}")
+    @ResponseStatus(HttpStatus.OK)
+    public java.util.List<Order> getRestaurantOrders(@PathVariable Long restaurantId) {
+        return orderService.getOrdersByRestaurant(restaurantId);
+    }
 }

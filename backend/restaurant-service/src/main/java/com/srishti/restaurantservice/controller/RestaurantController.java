@@ -34,4 +34,10 @@ public class RestaurantController {
     public RestaurantResponse getRestaurant(@PathVariable("id") Long id) {
         return restaurantService.getRestaurant(id);
     }
+
+    @GetMapping("/owner/{username}")
+    @ResponseStatus(HttpStatus.OK)
+    public RestaurantResponse getRestaurantByOwner(@PathVariable("username") String username) {
+        return restaurantService.getRestaurantByOwner(username);
+    }
 }

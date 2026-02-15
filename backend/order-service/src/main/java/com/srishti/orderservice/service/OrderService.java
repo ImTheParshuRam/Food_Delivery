@@ -27,6 +27,14 @@ public class OrderService {
     @Autowired
     private WebClient.Builder webClientBuilder;
     private final KafkaTemplate<String, OrderPlacedNotification> kafkaTemplate;
+
+    public List<Order> getOrdersByUser(Long userId) {
+        return orderRepository.findByUserId(userId);
+    }
+
+    public List<Order> getOrdersByRestaurant(Long restaurantId) {
+        return orderRepository.findByRestaurantId(restaurantId);
+    }
     public OrderResponse createOrder(Order order) {
         order.setOrderTime(System.currentTimeMillis());
         order.setTotalAmount(BigDecimal.valueOf(order.getOrderItems().stream()
