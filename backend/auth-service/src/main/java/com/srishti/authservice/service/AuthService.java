@@ -31,35 +31,50 @@ public class AuthService {
     private AuthenticationManager authenticationManager;
 
     public String saveUser(RegisterRequest registerRequest) {
+        System.out.println(">>> [AuthService] saveUser called with: " + registerRequest);
         try {
-            // Map RegisterRequest to UserCredential
+            // Check for existing username
+            System.out.println(">>> [AuthService] Checking if username exists: " + registerRequest.getUsername());
             if (userRepository.findByUsername(registerRequest.getUsername()).isPresent()) {
+                System.out.println(">>> [AuthService] Username already exists!");
                 throw new IllegalArgumentException("Username already exists");
             }
             
+            System.out.println(">>> [AuthService] Creating UserCredential...");
             UserCredential credential = new UserCredential();
             credential.setUsername(registerRequest.getUsername());
-            credential.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
+            // credential.setPassword(passwordEncoder.encode(registerRequest.getPassword())); // Moved to separate line for logging
+            String encodedPassword = passwordEncoder.encode(registerRequest.getPassword());
+            System.out.println(">>> [AuthService] Password encoded.");
+            credential.setPassword(encodedPassword);
             credential.setFullName(registerRequest.getName());
             
             // Convert phone string to Long
             try {
+                System.out.println(">>> [AuthService] Parsing phone: " + registerRequest.getPhone());
                 Long phoneNumber = Long.parseLong(registerRequest.getPhone().replaceAll("[^0-9]", ""));
                 credential.setPhoneNumber(phoneNumber);
             } catch (NumberFormatException e) {
-                System.err.println("Phone conversion error: " + e.getMessage());
+                System.err.println(">>> [AuthService] Phone parse error: " + e.getMessage());
                 credential.setPhoneNumber(0L);
             }
             
             credential.setAddress(registerRequest.getAddress());
+            System.out.println(">>> [AuthService] Address set: " + registerRequest.getAddress());
             credential.setUserRole(registerRequest.getRole() != null ? registerRequest.getRole() : UserRole.CUSTOMER);
+            System.out.println(">>> [AuthService] Role set: " + credential.getUserRole());
             
+            System.out.println(">>> [AuthService] Calling userRepository.save()...");
             userRepository.save(credential);
+            System.out.println(">>> [AuthService] User saved successfully!");
+            
             return "User added to the system";
         } catch (Exception e) {
-            System.err.println("Error saving user: " + e.getMessage());
+            System.err.println(">>> [AuthService] ERROR in saveUser:");
+            System.err.println("   Type: " + e.getClass().getName());
+            System.err.println("   Message: " + e.getMessage());
             e.printStackTrace();
-            throw new RuntimeException("Failed to save user: " + e.getMessage());
+            throw new RuntimeException("Failed to save user: " + e.getMessage(), e);
         }
     }
 

@@ -26,32 +26,24 @@ public class AuthController {
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<String> createUser(@RequestBody RegisterRequest registerRequest) {
+        System.out.println(">>> [AuthController] Received registration request");
+        System.out.println(">>> [AuthController] Payload: " + registerRequest);
         try {
-            System.out.println("=== REGISTRATION REQUEST RECEIVED ===");
-            System.out.println("Username: " + registerRequest.getUsername());
-            System.out.println("Name: " + registerRequest.getName());
-            System.out.println("Email: " + registerRequest.getEmail());
-            System.out.println("Phone: " + registerRequest.getPhone());
-            System.out.println("Role: " + registerRequest.getRole());
-            System.out.println("Address: " + registerRequest.getAddress());
-            System.out.println("====================================");
-            
+            System.out.println(">>> [AuthController] Calling AuthService.saveUser...");
             String result = authService.saveUser(registerRequest);
-            System.out.println("Result: " + result);
+            System.out.println(">>> [AuthController] AuthService returned success: " + result);
             return ResponseEntity.status(HttpStatus.CREATED).body(result);
         } catch (org.springframework.dao.DataIntegrityViolationException e) {
-            System.err.println("=== DUPLICATE USER ERROR ===");
+            System.err.println(">>> [AuthController] ERROR: DataIntegrityViolationException (Duplicate Entry)");
             return ResponseEntity.status(HttpStatus.CONFLICT).body("{\"message\": \"User already exists with this username or phone number\"}");
         } catch (IllegalArgumentException e) {
-            System.err.println("=== VALIDATION ERROR ===");
+            System.err.println(">>> [AuthController] ERROR: IllegalArgumentException (Validation): " + e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"message\": \"" + e.getMessage() + "\"}");
         } catch (Throwable e) {
-            System.err.println("=== CRITICAL ERROR IN REGISTRATION ===");
-            System.err.println("Error Type: " + e.getClass().getName());
-            System.err.println("Error Message: " + e.getMessage());
+            System.err.println(">>> [AuthController] CRITICAL ERROR:");
+            System.err.println("   Type: " + e.getClass().getName());
+            System.err.println("   Message: " + e.getMessage());
             e.printStackTrace();
-            System.err.println("===============================");
-            // Return stack trace or detailed message for debugging
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body("{\"message\": \"Critical failure: " + e.getMessage() + "\", \"type\": \"" + e.getClass().getName() + "\"}");
         }
