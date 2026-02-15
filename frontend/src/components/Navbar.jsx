@@ -33,7 +33,7 @@ const Navbar = () => {
                     <div className="navbar-links">
                         <Link to="/" className="nav-link">Home</Link>
                         <Link to="/restaurants" className="nav-link">Restaurants</Link>
-                        {isAuthenticated && user?.role === 'RESTAURANT_OWNER' && (
+                        {isAuthenticated && user?.userRole === 'RESTAURANT_OWNER' && (
                             <Link to="/my-restaurant" className="nav-link">My Restaurant</Link>
                         )}
                         {isAuthenticated && (

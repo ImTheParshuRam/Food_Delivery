@@ -68,6 +68,15 @@ public class AuthService {
             userRepository.save(credential);
             System.out.println(">>> [AuthService] User saved successfully!");
             
+            // Sync with User Service
+            try {
+                syncWithUserService(registerRequest);
+                System.out.println(">>> [AuthService] Synced with User Service successfully");
+            } catch (Exception e) {
+                System.err.println(">>> [AuthService] Failed to sync with User Service: " + e.getMessage());
+                // Don't fail the whole registration, just log
+            }
+            
             return "User added to the system";
         } catch (Exception e) {
             System.err.println(">>> [AuthService] ERROR in saveUser:");
@@ -78,8 +87,48 @@ public class AuthService {
         }
     }
 
-    public String generateToken(String username) {
-        return jwtService.generateToken(username);
+    public com.srishti.authservice.dto.LoginResponse generateToken(String username) {
+        String token = jwtService.generateToken(username);
+        UserCredential user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+        
+        com.srishti.authservice.dto.UserDto userDto = com.srishti.authservice.dto.UserDto.builder()
+                .id(String.valueOf(user.getId()))
+                .fullName(user.getFullName())
+                .email(user.getUsername()) // Mapping username to email field based on existing pattern
+                .phoneNumber(user.getPhoneNumber())
+                .address(user.getAddress())
+                .userRole(user.getUserRole())
+                .build();
+                
+        return com.srishti.authservice.dto.LoginResponse.builder()
+                .token(token)
+                .user(userDto)
+                .message("Login successful")
+                .build();
+    }
+
+    private void syncWithUserService(RegisterRequest request) {
+        String url = "http://localhost:8087/api/v1/user";
+        org.springframework.web.client.RestTemplate restTemplate = new org.springframework.web.client.RestTemplate();
+        
+        // Create payload matching User entity in User Service
+        java.util.Map<String, Object> payload = new java.util.HashMap<>();
+        payload.put("username", request.getUsername());
+        payload.put("fullName", request.getName());
+        payload.put("email", request.getEmail());
+        payload.put("password", request.getPassword()); // Ideally should be hashed or handled securely
+        payload.put("phoneNumber", request.getPhone() != null ? request.getPhone().replaceAll("[^0-9]", "") : null);
+        // Address mapping might be needed if User Service expects nested object
+        // Assuming flat structure or matching structure
+        payload.put("address", request.getAddress());
+        payload.put("role", request.getRole());
+
+        try {
+            restTemplate.postForObject(url, payload, String.class);
+        } catch (Exception e) {
+            throw new RuntimeException("Error calling user-service: " + e.getMessage());
+        }
     }
 
     public void validateToken(String token) {
