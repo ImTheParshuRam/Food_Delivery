@@ -33,6 +33,10 @@ public class AuthService {
     public String saveUser(RegisterRequest registerRequest) {
         try {
             // Map RegisterRequest to UserCredential
+            if (userRepository.findByUsername(registerRequest.getUsername()).isPresent()) {
+                throw new IllegalArgumentException("Username already exists");
+            }
+            
             UserCredential credential = new UserCredential();
             credential.setUsername(registerRequest.getUsername());
             credential.setPassword(passwordEncoder.encode(registerRequest.getPassword()));

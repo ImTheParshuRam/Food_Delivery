@@ -39,13 +39,19 @@ public class AuthController {
             String result = authService.saveUser(registerRequest);
             System.out.println("Result: " + result);
             return ResponseEntity.status(HttpStatus.CREATED).body(result);
+        } catch (org.springframework.dao.DataIntegrityViolationException e) {
+            System.err.println("=== DUPLICATE USER ERROR ===");
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("{\"message\": \"User already exists with this username or phone number\"}");
+        } catch (IllegalArgumentException e) {
+            System.err.println("=== VALIDATION ERROR ===");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"message\": \"" + e.getMessage() + "\"}");
         } catch (Exception e) {
             System.err.println("=== ERROR IN REGISTRATION ===");
             System.err.println("Error Type: " + e.getClass().getName());
             System.err.println("Error Message: " + e.getMessage());
             e.printStackTrace();
             System.err.println("===============================");
-            throw e;
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"message\": \"Registration failed: " + e.getMessage() + "\"}");
         }
     }
 
