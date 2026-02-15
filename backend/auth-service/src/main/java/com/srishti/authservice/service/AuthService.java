@@ -30,6 +30,9 @@ public class AuthService {
     private AuthenticationManager authenticationManager;
 
     public String saveUser(UserCredential credential) {
+        if (credential.getPassword() == null || credential.getPassword().isEmpty()) {
+            throw new IllegalArgumentException("Password cannot be null or empty");
+        }
         credential.setPassword(passwordEncoder.encode(credential.getPassword()));
         userRepository.save(credential);
         return "User added to the system";

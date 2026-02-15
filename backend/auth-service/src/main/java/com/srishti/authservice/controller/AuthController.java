@@ -4,6 +4,7 @@ import com.srishti.authservice.dto.AuthRequest;
 import com.srishti.authservice.dto.UserResponse;
 import com.srishti.authservice.model.UserCredential;
 import com.srishti.authservice.service.AuthService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -23,7 +24,7 @@ public class AuthController {
 
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
-    public String createUser(@RequestBody UserCredential user) {
+    public String createUser(@Valid @RequestBody UserCredential user) {
         System.out.println("Create User");
         return authService.saveUser(user);
     }
